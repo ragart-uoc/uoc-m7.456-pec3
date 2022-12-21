@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 namespace PEC3.Managers
@@ -17,10 +18,7 @@ namespace PEC3.Managers
             screenText.CrossFadeAlpha(0.0f, 1.5f, false);
             yield return new WaitForSeconds(1.5f);
 
-            Application.Quit();
-            #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-            #endif
+            SceneManager.LoadScene("Intro");
         }
     }
 }
