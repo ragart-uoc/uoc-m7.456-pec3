@@ -27,7 +27,7 @@ namespace PEC3.Managers
             foreach (Transform bgLayer in background)
             {
                 var bgLayerRenderer = bgLayer.GetComponent<SpriteRenderer>();
-                StartCoroutine(FadeTo(bgLayerRenderer, 255, 2.5f));
+                StartCoroutine(Fade.ColorFadeTo(bgLayerRenderer, 255, 2.5f));
             }
             yield return new WaitForSeconds(2.5f);
             
@@ -54,7 +54,7 @@ namespace PEC3.Managers
             // Fade in text
             screenText.text = "Now, two more factions have joined the war.";
             screenText.text += "\n\n";
-            screenText.text += "The Pina Colada Cult, a group of acolytes who worship the pineapple in pizza.";
+            screenText.text += "The Pina Colada Cult, a group of acolytes who worship pineapple in pizza.";
             screenText.text += "\n\n";
             screenText.text += "And the Napoli Heritage Preservation Association, who won't stop until that madness stops.";
             screenText.CrossFadeAlpha(1.0f, 1.5f, false);
@@ -87,18 +87,6 @@ namespace PEC3.Managers
         private static void LoadMainMenu()
         {
             SceneManager.LoadScene("MainMenu");
-        }
-
-        private IEnumerator FadeTo(SpriteRenderer sprite, float value, float time)
-        {
-            var bgLayerRenderer = sprite.GetComponent<SpriteRenderer>();
-            var bgLayerColor = bgLayerRenderer.color;
-            while (bgLayerColor.a < value)
-            {
-                bgLayerColor.a += Time.deltaTime / time;
-                bgLayerRenderer.color = bgLayerColor;
-                yield return null;
-            }
         }
     }
 }
