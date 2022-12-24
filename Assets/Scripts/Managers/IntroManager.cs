@@ -27,7 +27,7 @@ namespace PEC3.Managers
             foreach (Transform bgLayer in background)
             {
                 var bgLayerRenderer = bgLayer.GetComponent<SpriteRenderer>();
-                StartCoroutine(Fade.ColorFadeTo(bgLayerRenderer, 255, 2.5f));
+                StartCoroutine(Fade.FadeColorAlpha(bgLayerRenderer, 255, 2.5f));
             }
             yield return new WaitForSeconds(2.5f);
             

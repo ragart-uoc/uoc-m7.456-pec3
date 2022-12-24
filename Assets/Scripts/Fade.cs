@@ -6,7 +6,7 @@ namespace PEC3
 {
     public static class Fade
     {
-        public static IEnumerator FadeTo(Component component, string property, float value, float time, Action callback)
+        public static IEnumerator FadePropertyValue(Component component, string property, float value, float time, Action callback)
         {
             // Get type of component
             var type = component.GetType();
@@ -41,7 +41,7 @@ namespace PEC3
             callback?.Invoke();
         }
         
-        public static IEnumerator ColorFadeTo(Component component, float value, float time)
+        public static IEnumerator FadeColorAlpha(Component component, float value, float time)
         {
             // Get type of component
             var type = component.GetType();
