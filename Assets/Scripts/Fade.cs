@@ -4,8 +4,14 @@ using UnityEngine;
 
 namespace PEC3
 {
+    /// <summary>
+    /// Class <c>Fade</c> contains methods to help fading elements in and out.
+    /// </summary>
     public static class Fade
     {
+        /// <summary>
+        /// Method <c>FadePropertyValue</c> fades the value of a certain property.
+        /// </summary>
         public static IEnumerator FadePropertyValue(Component component, string property, float value, float time, Action callback)
         {
             // Get type of component
@@ -41,6 +47,9 @@ namespace PEC3
             callback?.Invoke();
         }
         
+        /// <summary>
+        /// Method <c>FadeColorAlpha</c> fades the alpha value of the color property.
+        /// </summary>
         public static IEnumerator FadeColorAlpha(Component component, float value, float time)
         {
             // Get type of component

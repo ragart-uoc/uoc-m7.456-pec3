@@ -5,11 +5,20 @@ using TMPro;
 
 namespace PEC3.Managers
 {
+    /// <summary>
+    /// Class <c>IntroManager</c> contains the methods and properties needed for the intro sequence.
+    /// </summary>
     public class IntroManager : MonoBehaviour
     {
+        /// <value>Property <c>background</c> represents the Transform component containing the background images.</value>
         public Transform background;
+        
+        /// <value>Property <c>screenText</c> represents the UI element containing the intro text.</value>
         public TextMeshProUGUI screenText;
 
+        /// <summary>
+        /// Method <c>Start</c> is called on the frame when a script is enabled just before any of the Update methods are called the first time.
+        /// </summary>
         private IEnumerator Start()
         {
             // Set alpha to 0 for all background images
@@ -76,6 +85,9 @@ namespace PEC3.Managers
             LoadMainMenu();
         }
 
+        /// <summary>
+        /// Method <c>Update</c> is called every frame, if the MonoBehaviour is enabled.
+        /// </summary>
         private void Update()
         {
             if (Input.anyKeyDown || Input.touchCount > 0)
@@ -84,6 +96,9 @@ namespace PEC3.Managers
             }
         }
 
+        /// <summary>
+        /// Method <c>LoadMainMenu</c> loads the main menu scene.
+        /// </summary>
         private static void LoadMainMenu()
         {
             SceneManager.LoadScene("MainMenu");
