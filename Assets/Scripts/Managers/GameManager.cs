@@ -1,37 +1,48 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using PEC3.Entities;
-using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
+using TMPro;
+using PEC3.Entities;
+using PEC3.States;
 
 namespace PEC3.Managers
 {
     /// <summary>
     /// Class <c>GameManager</c> contains the methods and properties needed for the game.
     /// </summary>
-    public class GameManager : MonoBehaviour
+    public class GameManager : StateMachine
     {
         /// <value>Property <c>Instance</c> represents the instance of the GameplayManager.</value>
         public static GameManager Instance;
 
-        /// <value>Property <c>Instance</c> represents the UI element containing the game options.</value>
+        /// <value>Property <c>Instance</c> represents the UI element containing the game options (NewGame scene only).</value>
         public GameObject optionList;
         
+        /// <value>Property <c>generalText</c> represents the UI element containing the general text (Game scene only).</value>
+        public TextMeshProUGUI generalText;
+        
         /// <value>Property <c>_players</c> represents the game players.</value>
-        private Dictionary<string, Player> _players = new Dictionary<string, Player>();
+        private readonly Dictionary<string, Player> _players = new Dictionary<string, Player>();
         
         /// <value>Property <c>_playerCount</c> represents the number of players.</value>
         private int _playerCount;
 
         /// <value>Property <c>MinPlayers</c> represents the minimum number of players.</value>
-        const int MinPlayers = 2;
+        private const int MinPlayers = 2;
         
         /// <value>Property <c>MinPlayers</c> represents the maximum number of players.</value>
-        const int MaxPlayers = 4;
+        private const int MaxPlayers = 4;
         
         /// <value>Property <c>InitialPlayerLives</c> represents the initial number of lives of the players.</value>
-        const int InitialPlayerLives = 3;
+        private const int InitialPlayerLives = 3;
+        
+        /// <value>Property <c>_playerOrder</c> represents the order of the players.</value>
+        public List<string> playerOrder;
+        
+        /// <value>Property <c>_currentPlayer</c> represents the current player.</value>
+        public Player CurrentPlayer;
 
         /// <summary>
         /// Method <c>Awake</c> is called when the script instance is being loaded.
@@ -81,6 +92,10 @@ namespace PEC3.Managers
                     UpdateActivePlayers(_playerCount);
                     break;
                 case "Game":
+                    playerOrder = _players.Values.Where(p => p.IsActive).Select(p => p.Identifier).ToList();
+                    playerOrder.Shuffle();
+                    CurrentPlayer = _players[playerOrder[0]];
+                    SetState(new Begin(this));
                     break;
             }
         }
@@ -118,7 +133,6 @@ namespace PEC3.Managers
         /// </summary>
         public void ChangeNumberOfPlayers(bool increase)
         {
-            Debug.Log("LALALALALALA");
             _playerCount = int.Parse(optionList.transform.Find("NumberOfPlayers/PlayerOptionSelector/PlayerOptionText").GetComponent<TextMeshProUGUI>().text);
             _playerCount += (increase) ? 1 : -1;
             _playerCount = _playerCount switch
@@ -139,7 +153,6 @@ namespace PEC3.Managers
             var playerOption = optionList.transform.Find(player + "/PlayerOptionSelector/PlayerOptionText");
             _players[player].IsCPU = !_players[player].IsCPU;
             playerOption.GetComponent<TextMeshProUGUI>().text = _players[player].IsCPU ? "CPU" : "Human";
-            Debug.Log(_players[player].IsCPU);
         }
         
         /// <summary>
@@ -152,6 +165,16 @@ namespace PEC3.Managers
             optionList.transform.Find("NumberOfPlayers/PlayerOptionSelector/PlayerOptionText").GetComponent<TextMeshProUGUI>().text = _playerCount.ToString();
             optionList.transform.Find("P3").gameObject.SetActive(_players["P3"].IsActive);
             optionList.transform.Find("P4").gameObject.SetActive(_players["P4"].IsActive);
+        }
+        
+        /// <summary>
+        /// Method <c>SetNextPlayer</c> sets the next player.
+        /// </summary>
+        private void SetNextPlayer()
+        {
+            var currentPlayerIndex = playerOrder.IndexOf(CurrentPlayer.Identifier);
+            var nextPlayerIndex = (currentPlayerIndex + 1) % playerOrder.Count;
+            CurrentPlayer = _players[playerOrder[nextPlayerIndex]];
         }
     }
 }

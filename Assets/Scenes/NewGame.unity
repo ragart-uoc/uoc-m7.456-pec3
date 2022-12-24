@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   optionList: {fileID: 732812913}
+  screenText: {fileID: 0}
 --- !u!4 &165392071
 Transform:
   m_ObjectHideFlags: 0
@@ -254,7 +255,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 44.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -350,7 +351,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 165392070}
         m_TargetAssemblyTypeName: PEC3.Managers.GameManager, Assembly-CSharp
-        m_MethodName: NewGame
+        m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
