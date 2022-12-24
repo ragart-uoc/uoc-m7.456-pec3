@@ -13,7 +13,7 @@ namespace PEC3.Managers
         public CanvasGroup menuGroup;
         
         /// <value>Property <c>creditsGroup</c> represents the CanvasGroup component containing the credits.</value>
-        public GameObject creditsGroup;
+        public GameObject credits;
         
         /// <summary>
         /// Method <c>Start</c> is called on the frame when a script is enabled just before any of the Update methods are called the first time.
@@ -46,7 +46,7 @@ namespace PEC3.Managers
         /// </summary>
         public void ToggleCredits()
         {
-            creditsGroup.SetActive(!creditsGroup.activeSelf);
+            credits.SetActive(!credits.activeSelf);
         }
         
         /// <summary>
