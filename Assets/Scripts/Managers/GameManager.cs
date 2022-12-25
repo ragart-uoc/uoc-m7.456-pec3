@@ -62,6 +62,11 @@ namespace PEC3.Managers
             _players.Add("P3", new Player("P3", "Pina Colada Cult", InitialPlayerLives, false, true));
             _players.Add("P4", new Player("P4", "Napoli Heritage P. A.", InitialPlayerLives, false, true));
             
+            _players["P1"].SetWinnerMessage("");
+            _players["P2"].SetWinnerMessage("All hail the onion.");
+            _players["P3"].SetWinnerMessage("");
+            _players["P4"].SetWinnerMessage("The madness has stopped.\n\nNo more pineapple.\nNo more onion\nNo more Spanish omelette.\n\nThere's only pizza.");
+            
             _playerCount = 2;
         }
         

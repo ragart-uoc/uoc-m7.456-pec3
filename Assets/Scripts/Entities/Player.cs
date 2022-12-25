@@ -11,6 +11,9 @@ namespace PEC3.Entities
         /// <value>Property <c>Name</c> represents the player name.</value>
         public string Name;
         
+        /// <value>Property <c>WinnerMessage</c> represents the player winning message.</value>
+        public string WinnerMessage;
+        
         /// <value>Property <c>Health</c> represents the player health.</value>
         public int Health;
 
@@ -28,6 +31,11 @@ namespace PEC3.Entities
             Health = health;
             IsActive = isActive;
             IsCPU = isCPU;
+        }
+        
+        public void SetWinnerMessage(string winnerMessage)
+        {
+            WinnerMessage = winnerMessage;
         }
 
         public bool TakeDamage(int damage)
