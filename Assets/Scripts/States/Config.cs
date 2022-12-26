@@ -1,19 +1,18 @@
 using System.Collections;
 using PEC3.Managers;
-using UnityEngine;
 
 namespace PEC3.States
 {
     /// <summary>
-    /// Class <c>End</c> contains the logic for the ShotsFired state.
+    /// Class <c>Config</c> contains the logic for the ShotsFired state.
     /// </summary>
-    public class End : State
+    public class Config : State
     {
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="gameManager">The gameManager instance</param>
-        public End(GameManager gameManager) : base(gameManager)
+        public Config(GameManager gameManager) : base(gameManager)
         {
         }
         

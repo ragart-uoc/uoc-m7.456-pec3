@@ -4,12 +4,17 @@ namespace PEC3.States
 {
     public abstract class StateMachine : MonoBehaviour
     {
-        protected State State;
+        private State _state;
 
         public void SetState(State state)
         {
-            State = state;
-            StartCoroutine(State.Start());
+            _state = state;
+            StartCoroutine(_state.Start());
+        }
+
+        public void FixedUpdate()
+        {
+            _state.FixedUpdate();
         }
     }
 }

@@ -8,6 +8,14 @@ namespace PEC3.Controllers
     /// </summary>
     public class PlayerController : MonoBehaviour
     {
+        public GameObject projectilePrefab;
+
+        public int minPower;
+        public int maxPower = 100;
+        
+        private int _currentPower;
+        private bool _isCharging;
+        
         /// <value>Property <c>movingSpeed</c> defines the initial speed of the player.</value>
         [SerializeField] private float movingSpeed = 8f;
         
@@ -56,6 +64,12 @@ namespace PEC3.Controllers
         {
             _body.velocity = new Vector2(_inputX * movingSpeed, _body.velocity.y);
             _animator.SetBool(AnimatorIsMoving, _inputX != 0);
+            
+            // Increase power while charging
+            if (_isCharging)
+            {
+                _currentPower += (_currentPower < maxPower) ? 1 : 0;
+            }
         }
 
         /// <summary>
@@ -78,14 +92,42 @@ namespace PEC3.Controllers
             _body.AddForce(Vector2.up * jumpHeight, ForceMode2D.Impulse);
             _animator.SetBool(AnimatorIsJumping, true);
         }
-        
+
         /// <summary>
-        /// Method <c>Aim</c> changes the player aim.
+        /// Method <c>Fire</c> makes the player shoot.
         /// </summary>
         /// <param name="context">The CallbackContext of the InputAction</param>
-        public void Aim(InputAction.CallbackContext context)
+        public void Fire(InputAction.CallbackContext context)
         {
-            _inputY = context.ReadValue<Vector2>().y;
+            // Calculate power depending on hold duration
+            if (context.started)
+            {
+                _currentPower = minPower;
+            }
+            else if (context.performed)
+            {
+                
+            }
+            else if (context.canceled)
+            {
+                Debug.Log(context.ReadValue<Vector3>());
+                Debug.Log("Current power: " + _currentPower);
+                // Get the touch or click position depeding on touch or mouse input
+                var aimPosition = context.ReadValue<Vector2>();
+                Debug.Log("Aim position: " + aimPosition);
+                // Get the playere position
+                var transformPosition = _transform.position;
+                var playerPosition = new Vector2(transformPosition.x, transformPosition.y);
+                Debug.Log("Player position: " + playerPosition);
+                // Calculate the direction
+                var direction = (aimPosition - playerPosition).normalized;
+                Debug.Log("Direction: " + direction);
+                // Instantiate the projectile
+                var projectile = Instantiate(projectilePrefab, transformPosition, Quaternion.identity);
+                // Add force to the projectile
+                projectile.GetComponent<Rigidbody2D>().AddForce(direction * _currentPower, ForceMode2D.Impulse);
+                // Reset power
+            }
         }
         
         /// <summary>
