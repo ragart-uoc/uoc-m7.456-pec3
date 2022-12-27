@@ -69,10 +69,13 @@ De manera adicional, se han usado componentes como Cinemachine o el nuevo InputS
 - "Cebolla" - OpenClipart-Vectors - https://pixabay.com/es/vectors/cebolla-recorte-nuevo-lágrimas-161611/
 
 ### Sonidos
-
+- "4 projectile launches" - Michel Baradari - https://opengameart.org/content/4-projectile-launches
 
 ### Música
-
+- "The fall of Arcana" - Matthew Pablo - https://opengameart.org/content/the-fall-of-arcana-new-era-version
+- "Boss Battle Theme" - CleytonKauffman - https://opengameart.org/content/boss-battle-theme
+- "Myst" - Alexandr Zhelanov - https://opengameart.org/content/post-apocalypse-more-music-inside
+- "Assasin's Assault" - HorrorPen - https://opengameart.org/content/assasins-assault
 
 ## Referencias
 
