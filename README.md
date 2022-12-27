@@ -6,18 +6,18 @@ El objetivo de la práctica era desarrollar un juego de artillería en 2D, simil
 
 ## Vídeo explicativo
 
-
-
+[![Vídeo explicativo](https://img.youtube.com/vi/jzVNTlM7aNs/maxresdefault.jpg)](https://youtu.be/jzVNTlM7aNs)
 
 ## Vídeo versión Android
 
-
-
+[![Vídeo explicativo](https://img.youtube.com/vi/sIvAv7FZdtA/maxresdefault.jpg)](https://youtu.be/sIvAv7FZdtA)
 
 ## Versión jugable
 
 
+El prototipo puede jugarse aquí:
 
+[Juega a "Tortilla Wars" de Ragart en itch.io](https://ragart.itch.io/tortilla-wars)
 
 ## Repositorio en GitLab
 
@@ -33,13 +33,15 @@ En el caso de WebGL, el control se hace mediante teclado y ratón:
 
 - La flecha izquierda y la tecla A mueven al personaje hacia la izquierda.
 - La flecha derecha y la tecla D mueven al personaje hacia la derecha.
+- El espacio hace que el personaje salte.
 - El botón izquierdo del ratón dispara el proyectil hacia el punto en el que se haya hecho el clic, aunque siempre asegurando un ángulo mínimo de 45º. Si se mantiene pulsado antes de soltarlo, la fuerza del proyectil aumenta.
 
 En el caso de Android, el control se hace mediante los botones en pantalla:
 
 - El botón con la flecha izquierda mueve al personaje hacia la izquierda.
 - El botón con la flecha derecha mueve al personaje hacia la derecha.
-- El botón de disparo dispara el proyectil hacia la dirección en la que esté mirando el personaje en un ángulo de 45º y con una intensidad fija.
+- El botón con la flecha superior hace que el personaje salte.
+- El botón de disparo dispara el proyectil hacia la dirección en la que esté mirando el personaje en un ángulo de 45º. Si se mantiene pulsado antes de soltarlo, la fuerza del proyectil aumenta.
 
 ## Desarrollo
 
@@ -54,7 +56,8 @@ A efectos de cumplir lo solicitado en las instrucciones, el prototipo incluye lo
 De manera adicional, se han usado componentes como Cinemachine o el nuevo InputSystem para obtener un mayor control sobre el juego.
 
 ## Problemas conocidos
-- La versión de Android presenta problemas con el movimiento y los disparos de los jugadores humanos.
+- En raras ocasiones, el juego salta el turno de un jugador.
+- En la versión móvil, los controles en pantalla no desaparecen en el turno de los jugadores controlados por la CPU.
 
 ## Créditos
 
