@@ -4,15 +4,15 @@ using PEC3.Managers;
 namespace PEC3.States
 {
     /// <summary>
-    /// Class <c>Config</c> contains the logic for the ShotsFired state.
+    /// Class <c>Idle</c> contains the logic for the Idle state.
     /// </summary>
-    public class Config : State
+    public class Idle : State
     {
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="gameManager">The gameManager instance</param>
-        public Config(GameManager gameManager) : base(gameManager)
+        public Idle(GameManager gameManager) : base(gameManager)
         {
         }
         

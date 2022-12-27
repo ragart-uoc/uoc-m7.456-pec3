@@ -3,7 +3,7 @@ using UnityEngine;
 namespace PEC3.Entities
 {
     /// <summary>
-    /// Class <c>Player</c> contains the methods and properties needed for the game.
+    /// Class <c>Player</c> represents a player instance.
     /// </summary>
     public class Player
     {

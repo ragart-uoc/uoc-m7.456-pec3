@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using Cinemachine;
-using PEC3.Controllers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using TMPro;
+using Cinemachine;
 using PEC3.Entities;
 using PEC3.States;
 
@@ -34,6 +34,9 @@ namespace PEC3.Managers
         /// <value>Property <c>Instance</c> represents the UI element containing the game options (NewGame scene only).</value>
         public GameObject optionList;
         
+        /// <value>Property <c>Instance</c> represents the UI element containing the start button (NewGame scene only).</value>
+        public Button startButton;
+        
         /// <value>Property <c>playerInfoGroup</c> represents the UI element containing the player information (Game scene only).</value>
         public CanvasGroup playerInfoGroup;
         
@@ -49,11 +52,23 @@ namespace PEC3.Managers
         /// <value>Property <c>winnerText</c> represents the UI element containing the winner text (End scene only).</value>
         public TextMeshProUGUI winnerText;
         
+        /// <value>Property <c>playAgainButton</c> represents the UI element containing the play again button (End scene only).</value>
+        public Button playAgainButton;
+        
+        /// <value>Property <c>PlayerSelectButton</c> represents the UI element containing the back to player select button (End scene only).</value>
+        public Button playerSelectButton;
+        
+        /// <value>Property <c>MainMenuButton</c> represents the UI element containing the back to main menu button (Game scene only).</value>
+        public Button mainMenuButton;
+        
         /// <value>Property <c>virtualCamera</c> represents the Cinemachine Virtual Camera.</value>
         public CinemachineVirtualCamera virtualCamera;
         
         /// <value>Property <c>Players</c> represents the game players.</value>
-        private readonly Dictionary<string, Player> _players = new Dictionary<string, Player>();
+        public readonly Dictionary<string, Player> Players = new Dictionary<string, Player>();
+
+        /// <value>Property <c>_initialPlayers</c> represents the inital status of the game players.</value>
+        private readonly  Dictionary<string, Player> _initialPlayers = new Dictionary<string, Player>();
         
         /// <value>Property <c>_playerCount</c> represents the number of players.</value>
         private int _playerCount;
@@ -74,15 +89,17 @@ namespace PEC3.Managers
             _instance = this;
             DontDestroyOnLoad(this.gameObject);
             
-            _players.Add("P1", new Player("P1", "Rebel Potato Army", InitialPlayerLives, true, false));
-            _players.Add("P2", new Player("P2", "The Onionite Empire", InitialPlayerLives, true, false));
-            _players.Add("P3", new Player("P3", "Pina Colada Cult", InitialPlayerLives, false, true));
-            _players.Add("P4", new Player("P4", "Napoli Heritage P. A.", InitialPlayerLives, false, true));
+            SetState(new Idle(this));
             
-            _players["P1"].WinnerMessage = "No more onion.\n\nCivilization has reached a new level of peace and prosperity.\n\nWar is no longer necessary.\n\nWait, what do you mean you don't like half-cooked omelettes?";
-            _players["P2"].WinnerMessage = "With no omelette without onion in the world, the rest of the factions have surrendered to the Onionite Empire.\n\nAll hail the onion.";
-            _players["P3"].WinnerMessage = "The Cult has taken over the world.\n\nEverything has pineapple now...\n\nEven the Spanish omelette.";
-            _players["P4"].WinnerMessage = "The madness has stopped.\n\nNo more pineapple.\nNo more onion\nNo more Spanish omelette.\n\nThere's only pizza.";
+            Players.Add("P1", new Player("P1", "Rebel Potato Army", InitialPlayerLives, true, false));
+            Players.Add("P2", new Player("P2", "The Onionite Empire", InitialPlayerLives, true, true));
+            Players.Add("P3", new Player("P3", "Pina Colada Cult", InitialPlayerLives, false, true));
+            Players.Add("P4", new Player("P4", "Napoli Heritage P. A.", InitialPlayerLives, false, true));
+            
+            Players["P1"].WinnerMessage = "No more onion.\n\nCivilization has reached a new level of peace and prosperity.\n\nWar is no longer necessary.\n\nWait, what do you mean you don't like half-cooked omelettes?";
+            Players["P2"].WinnerMessage = "With no omelette without onion in the world, the rest of the factions have surrendered to the Onionite Empire.\n\nAll hail the onion.";
+            Players["P3"].WinnerMessage = "The Cult has taken over the world.\n\nEverything has pineapple now...\n\nEven the Spanish omelette.";
+            Players["P4"].WinnerMessage = "The madness has stopped.\n\nNo more pineapple.\nNo more onion\nNo more Spanish omelette.\n\nThere's only pizza.";
             
             _playerCount = 2;
         }
@@ -113,10 +130,20 @@ namespace PEC3.Managers
                 case "NewGame":
                     // Get the UI element containing the game options
                     optionList = GameObject.Find("PlayerOptionsGroup");
+                    // Get the UI element containing the start button and add a listener
+                    startButton = GameObject.Find("StartButton").GetComponent<Button>();
+                    startButton.onClick.AddListener(StartGame);
                     // Update the UI element containing the game options
                     UpdateActivePlayers(_playerCount);
                     break;
                 case "Game":
+                    // Make a backup of the intial elements of the game
+                    _initialPlayers.Clear();
+                    foreach (var player in Players)
+                    {
+                        var playerObject = new Player(player.Value.Identifier, player.Value.Name, player.Value.Health, player.Value.IsActive, player.Value.IsCPU);
+                        _initialPlayers.Add(player.Value.Identifier, playerObject); 
+                    }
                     // Get the UI elements
                     playerInfoGroup = GameObject.Find("PlayerInfoGroup").GetComponent<CanvasGroup>();
                     playerNameText = GameObject.Find("PlayerNameText").GetComponent<TextMeshProUGUI>();
@@ -128,15 +155,15 @@ namespace PEC3.Managers
                     // Get the UI element containing the virtual camera
                     virtualCamera = GameObject.Find("Cinemachine VCam").GetComponent<CinemachineVirtualCamera>();
                     // Get the game objects containing the players and shows them if they are active
-                    foreach (var player in _players)
+                    foreach (var player in Players)
                     {
                         player.Value.GameObject = GameObject.Find(player.Value.Identifier);
                         player.Value.GameObject.SetActive(player.Value.IsActive);
                     }
                     // Determine the order of the players
-                    playerOrder = _players.Values.Where(p => p.IsActive).Select(p => p.Identifier).ToList();
+                    playerOrder = Players.Values.Where(p => p.IsActive).Select(p => p.Identifier).ToList();
                     playerOrder.Shuffle();
-                    _players[playerOrder[0]].IsCurrent = true;
+                    Players[playerOrder[0]].IsCurrent = true;
                     // Begin the game
                     SetState(new Begin(this));
                     break;
@@ -144,13 +171,18 @@ namespace PEC3.Managers
                     // Get the UI elements
                     generalText = GameObject.Find("GeneralText").GetComponent<TextMeshProUGUI>();
                     winnerText = GameObject.Find("WinnerText").GetComponent<TextMeshProUGUI>();
+                    playAgainButton = GameObject.Find("PlayAgainButton").GetComponent<Button>();
+                    playerSelectButton = GameObject.Find("PlayerSelectButton").GetComponent<Button>();
+                    mainMenuButton = GameObject.Find("MainMenuButton").GetComponent<Button>();
+                    // Add listeners to the UI elements
+                    playAgainButton.onClick.AddListener(RestartGame);
+                    playerSelectButton.onClick.AddListener(NewGame);
+                    mainMenuButton.onClick.AddListener(ExitGame);
                     // Determine the winner
-                    var winner = _players.Values.FirstOrDefault(p => p.IsActive);
+                    var winner = Players.Values.FirstOrDefault(p => p.IsActive);
                     // Update the UI element containing the general text
                     generalText.text = winner.Identifier + " - " + winner.Name + " wins!";
                     winnerText.text = winner.WinnerMessage;
-                    // Set the state to the end state
-                    SetState(new End(this));
                     break;
             }
         }
@@ -164,9 +196,23 @@ namespace PEC3.Managers
         }
         
         /// <summary>
-        /// Method <c>RestartGame</c> destroys the instance and returns to the player selection screen.
+        /// Method <c>RestartGame</c> recovers the initial status of the game and restarts it.
         /// </summary>
         public void RestartGame()
+        {
+            Players.Clear();
+            foreach (var player in _initialPlayers)
+            {
+                var playerObject = new Player(player.Value.Identifier, player.Value.Name, player.Value.Health, player.Value.IsActive, player.Value.IsCPU);
+                Players.Add(player.Value.Identifier, playerObject); 
+            }
+            SceneManager.LoadScene("Game");
+        }
+        
+        /// <summary>
+        /// Method <c>NewGame</c> destroys the instance and returns to the player selection screen.
+        /// </summary>
+        public void NewGame()
         {
             Destroy(this.gameObject);
             _instance = null;
@@ -206,8 +252,8 @@ namespace PEC3.Managers
         {
             var player = EventSystem.current.currentSelectedGameObject.transform.parent.parent.name;
             var playerOption = optionList.transform.Find(player + "/PlayerOptionSelector/PlayerOptionText");
-            _players[player].IsCPU = !_players[player].IsCPU;
-            playerOption.GetComponent<TextMeshProUGUI>().text = _players[player].IsCPU ? "CPU" : "Human";
+            Players[player].IsCPU = !Players[player].IsCPU;
+            playerOption.GetComponent<TextMeshProUGUI>().text = Players[player].IsCPU ? "CPU" : "Human";
         }
         
         /// <summary>
@@ -215,11 +261,11 @@ namespace PEC3.Managers
         /// </summary>
         private void UpdateActivePlayers(int activePlayers)
         {
-            _players["P3"].IsActive = (activePlayers >= 3);
-            _players["P4"].IsActive = (activePlayers == 4);
+            Players["P3"].IsActive = (activePlayers >= 3);
+            Players["P4"].IsActive = (activePlayers == 4);
             optionList.transform.Find("NumberOfPlayers/PlayerOptionSelector/PlayerOptionText").GetComponent<TextMeshProUGUI>().text = _playerCount.ToString();
-            optionList.transform.Find("P3").gameObject.SetActive(_players["P3"].IsActive);
-            optionList.transform.Find("P4").gameObject.SetActive(_players["P4"].IsActive);
+            optionList.transform.Find("P3").gameObject.SetActive(Players["P3"].IsActive);
+            optionList.transform.Find("P4").gameObject.SetActive(Players["P4"].IsActive);
         }
         
         /// <summary>
@@ -227,7 +273,7 @@ namespace PEC3.Managers
         /// </summary>
         public Player GetCurrentPlayer()
         {
-            return _players.Values.First(p => p.IsCurrent);
+            return Players.Values.First(p => p.IsCurrent);
         }
         
         /// <summary>
@@ -236,11 +282,11 @@ namespace PEC3.Managers
         public void SetNextPlayer()
         {
             var currentPlayer = GetCurrentPlayer();
-            _players[currentPlayer.Identifier].IsCurrent = false;
+            Players[currentPlayer.Identifier].IsCurrent = false;
             var currentPlayerIndex = playerOrder.IndexOf(currentPlayer.Identifier);
             var nextPlayerIndex = (currentPlayerIndex + 1) % playerOrder.Count;
             var nextPlayerIdentifier = playerOrder[nextPlayerIndex];
-            _players[nextPlayerIdentifier].IsCurrent = true;
+            Players[nextPlayerIdentifier].IsCurrent = true;
         }
         
         

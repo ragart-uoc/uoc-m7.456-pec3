@@ -160,9 +160,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 346552095856369394, guid: 9bf5ccbf4ef17e64abad824b8268230e, type: 3}
   movingSpeed: 8
-  jumpHeight: 5
-  aimAngle: 0
-  aimSpeed: 0.1
+  jumpHeight: 10
 --- !u!114 &3020284425199212981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,22 +222,6 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8428338942156740580}
         m_TargetAssemblyTypeName: PEC3.Controllers.PlayerController, Assembly-CSharp
-        m_MethodName: Aim
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: a0d6f9fa-f4c1-4e3e-a355-384d01c2e819
-    m_ActionName: Player/Aim[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8428338942156740580}
-        m_TargetAssemblyTypeName: PEC3.Controllers.PlayerController, Assembly-CSharp
         m_MethodName: Fire
         m_Mode: 0
         m_Arguments:
@@ -252,50 +234,6 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 546f6d15-1f3b-4ec9-a5ba-3d777bfdcc87
     m_ActionName: Player/Fire[/Mouse/leftButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 7f5b0dbb-d83d-4a24-a321-2c5d0c692177
-    m_ActionName: Player/Look[/Mouse/delta]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 641b6109-f4ae-4d17-a1c2-49a81a716fd3
-    m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: c604957d-1699-4f3a-b267-0343b704956e
-    m_ActionName: UI/Submit[/Keyboard/enter]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 94989aaa-198f-4ea3-a9cc-c03f3bfaf0c1
-    m_ActionName: UI/Cancel[/Keyboard/escape]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: afa6dbc7-f82a-49db-99a3-4c5cd3aca17b
-    m_ActionName: UI/Point[/Mouse/position]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 25f46d94-e37c-43c8-95d5-907a2b75b494
-    m_ActionName: UI/Click[/Mouse/leftButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 05d5da6b-2203-4996-a1ac-46767c225c3c
-    m_ActionName: UI/ScrollWheel[/Mouse/scroll]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 54ffecae-81ac-466b-8144-c33e1de33190
-    m_ActionName: UI/MiddleClick[/Mouse/middleButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: fc1466a4-390d-4b20-9c12-e9b8439ce4bf
-    m_ActionName: UI/RightClick[/Mouse/rightButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 527b657d-422f-4a63-a38a-2124f2cb6a42
-    m_ActionName: UI/TrackedDevicePosition
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: df96fd58-6098-46ac-9b8b-490b4fbae314
-    m_ActionName: UI/TrackedDeviceOrientation
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using PEC3.Managers;
+using PEC3.States;
 
 namespace PEC3.Controllers
 {
@@ -8,19 +10,29 @@ namespace PEC3.Controllers
     /// </summary>
     public class PlayerController : MonoBehaviour
     {
+        /// <value>Property <c>projectilePrefab</c> represents the projectile prefab.</value>
         public GameObject projectilePrefab;
 
-        public int minPower;
-        public int maxPower = 100;
+        /// <value>Property <c>MinPower</c> represents the minimum power of the projectile.</value>
+        private const float MinPower = 0;
         
-        private int _currentPower;
+        /// <value>Property <c>MaxPower</c> represents the maximum power of the projectile.</value>
+        private const float MaxPower = 50;
+        
+        /// <value>Property <c>_currentPower</c> represents the current power of the projectile.</value>
+        private float _currentPower;
+        
+        /// <value>Property <c>_isCHharging</c> defines if the player is charging the projectile.</value>
         private bool _isCharging;
+
+        /// <value>Property <c>_gameManager</c> represents the GameManager instance.</value>
+        private GameManager _gameManager;
         
         /// <value>Property <c>movingSpeed</c> defines the initial speed of the player.</value>
         [SerializeField] private float movingSpeed = 8f;
         
         /// <value>Property <c>jumpHeight</c> defines the jump force of the player.</value>
-        [SerializeField] private float jumpHeight = 5f;
+        [SerializeField] private float jumpHeight = 10f;
 
         /// <value>Property <c>_transform</c> represents the RigidBody2D component of the player.</value>
         private Transform _transform;
@@ -51,6 +63,7 @@ namespace PEC3.Controllers
         /// </summary>
         private void Awake()
         {
+            _gameManager = FindObjectOfType<GameManager>();
             _transform = transform;
             _body = GetComponent<Rigidbody2D>();
             _renderer = GetComponent<SpriteRenderer>();
@@ -68,7 +81,7 @@ namespace PEC3.Controllers
             // Increase power while charging
             if (_isCharging)
             {
-                _currentPower += (_currentPower < maxPower) ? 1 : 0;
+                _currentPower += (_currentPower < MaxPower) ? 0.5f : 0f;
             }
         }
 
@@ -79,7 +92,12 @@ namespace PEC3.Controllers
         public void Move(InputAction.CallbackContext context)
         {
             _inputX = context.ReadValue<Vector2>().x;
-            _renderer.flipX = _inputX < 0;
+            _renderer.flipX = _inputX switch
+            {
+                > 0 => false,
+                < 0 => true,
+                _ => _renderer.flipX
+            };
         }
         
         /// <summary>
@@ -102,32 +120,54 @@ namespace PEC3.Controllers
             // Calculate power depending on hold duration
             if (context.started)
             {
-                _currentPower = minPower;
+                _currentPower = MinPower;
+                _isCharging = true;
             }
             else if (context.performed)
             {
-                
-            }
-            else if (context.canceled)
-            {
-                Debug.Log(context.ReadValue<Vector3>());
-                Debug.Log("Current power: " + _currentPower);
-                // Get the touch or click position depeding on touch or mouse input
-                var aimPosition = context.ReadValue<Vector2>();
-                Debug.Log("Aim position: " + aimPosition);
-                // Get the playere position
-                var transformPosition = _transform.position;
-                var playerPosition = new Vector2(transformPosition.x, transformPosition.y);
-                Debug.Log("Player position: " + playerPosition);
-                // Calculate the direction
-                var direction = (aimPosition - playerPosition).normalized;
-                Debug.Log("Direction: " + direction);
-                // Instantiate the projectile
-                var projectile = Instantiate(projectilePrefab, transformPosition, Quaternion.identity);
-                // Add force to the projectile
-                projectile.GetComponent<Rigidbody2D>().AddForce(direction * _currentPower, ForceMode2D.Impulse);
+                // Stop charging
+                _isCharging = false;
+                // Get position depending on device
+                Vector3 aimPosition;
+                switch (context.control.device)
+                {
+                    case Mouse:
+                        aimPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+                        break;
+                    case Touchscreen:
+                        aimPosition = Camera.main.ScreenToWorldPoint(Touchscreen.current.primaryTouch.position.ReadValue());
+                        break;
+                    default:
+                        return;
+                }
+                // Get player position
+                var playerPosition = _transform.position;
+                // Calculate direction
+                var aimDirection = (aimPosition - playerPosition).normalized;
+                aimDirection.y = (aimDirection.y < 0.5f) ? 0.5f : aimDirection.y;
+                // Flip player if needed
+                _renderer.flipX = aimDirection.x < 0f;
+                // Define a offset from the player for the projectile
+                var projectileOffset = new Vector3
+                {
+                    x = (aimDirection.x > 0) ? 1f : -1f,
+                    y = aimDirection.y
+                };
+                // Shoot
+                Shoot(playerPosition, projectileOffset, _currentPower, aimDirection);
                 // Reset power
+                _currentPower = MinPower;
+                // Set GameManager state to ShotsFired
+                _gameManager.SetState(new ShotsFired(_gameManager));
             }
+        }
+        
+        public void Shoot(Vector3 position, Vector3 offset, float power, Vector3 direction)
+        {
+            // Instantiate projectile with an offset from the player
+            var projectile = Instantiate(projectilePrefab, position + offset, Quaternion.identity);
+            // Add force to projectile
+            projectile.GetComponent<Rigidbody2D>().AddForce(direction * power, ForceMode2D.Impulse);
         }
         
         /// <summary>

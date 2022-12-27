@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using PEC3.Controllers;
@@ -14,6 +15,9 @@ namespace PEC3.States
     {
         /// <value>Property <c>_currentPlayer</c> represents the current player.</value>
         private Player _currentPlayer;
+        
+        /// <value>Property <c>_playerRenderer</c> represents the player renderer.</value>
+        private SpriteRenderer _playerRenderer;
         
         /// <value>Property <c>_playerController</c> represents the player controller.</value>
         private PlayerController _playerController;
@@ -42,6 +46,7 @@ namespace PEC3.States
         {
             // Get the current player
             _currentPlayer = GameManager.GetCurrentPlayer();
+            _playerRenderer = _currentPlayer.GameObject.GetComponent<SpriteRenderer>();
             _playerController = _currentPlayer.GameObject.GetComponent<PlayerController>();
             _playerInput = _currentPlayer.GameObject.GetComponent<PlayerInput>();
 
@@ -54,7 +59,7 @@ namespace PEC3.States
             GameManager.playerInfoGroup.alpha = 1;
             
             // Show the turn message
-            GameManager.generalText.text = _currentPlayer.Identifier + " - " + _currentPlayer.Name + "\nIt's your turn";
+            GameManager.generalText.text = "Your turn, " + _currentPlayer.Identifier;
             GameManager.generalText.canvasRenderer.SetAlpha(1.0f);
             yield return new WaitForSeconds(1.5f);
             GameManager.generalText.canvasRenderer.SetAlpha(0.0f);
@@ -74,6 +79,44 @@ namespace PEC3.States
             
             // Start the timer
             _timerOn = true;
+            
+            // If the player is controlled by the CPU, find the closest player
+            if (_currentPlayer.IsCPU)
+            {
+                
+                // Get the closest player
+                Player targetPlayer = null;
+                var minDistance = Mathf.Infinity;
+                foreach (var player in GameManager.Players.Where(player => player.Value.Identifier != _currentPlayer.Identifier))
+                {
+                    var distance = Vector3.Distance(_currentPlayer.GameObject.transform.position, player.Value.GameObject.transform.position);
+                    if (!(distance < minDistance)) continue;
+                    minDistance = distance;
+                    targetPlayer = player.Value;
+                }
+                
+                // Calculate the direction and the force required to hit the target
+                var playerPosition = _currentPlayer.GameObject.transform.position;
+                var aimDirection = (targetPlayer.GameObject.transform.position - playerPosition).normalized;
+                aimDirection.y = (aimDirection.y < 0.5f) ? 0.5f : aimDirection.y;
+                var aimForce = (aimDirection * 10f).magnitude;
+
+                // Flip player if needed
+                _playerRenderer.flipX = aimDirection.x < 0f;
+                
+                // Instantiate projectile with an offset from the player
+                var projectileOffset = new Vector3
+                {
+                    x = (aimDirection.x > 0) ? 1f : -1f,
+                    y = aimDirection.y
+                };
+                
+                // Shoot
+                _playerController.Shoot(playerPosition, projectileOffset, aimForce, aimDirection);
+
+                // Set GameManager state to ShotsFired
+                GameManager.SetState(new ShotsFired(GameManager));
+            }
         }
         
         /// <summary>

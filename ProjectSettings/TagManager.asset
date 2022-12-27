@@ -8,6 +8,7 @@ TagManager:
   - MenuButton
   - Ground
   - Projectile
+  - Explosion
   layers:
   - Default
   - TransparentFX
