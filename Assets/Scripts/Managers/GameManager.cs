@@ -75,6 +75,12 @@ namespace PEC3.Managers
 
         /// <value>Property <c>_playerOrder</c> represents the order of the players.</value>
         public List<string> playerOrder;
+        
+        /// <value>Property <c>_cameraAudioSource</c> represents the AudioSource component of the camera.</value>
+        private AudioSource _cameraAudioSource;
+        
+        /// <value>Property <c>AudioClips</c> represents a dictionary containing all sounds and music for the game.</value>
+        public Dictionary<string, AudioClip> AudioClips = new Dictionary<string, AudioClip>();
 
         /// <summary>
         /// Method <c>Awake</c> is called when the script instance is being loaded.
@@ -102,6 +108,12 @@ namespace PEC3.Managers
             Players["P4"].WinnerMessage = "The madness has stopped.\n\nNo more pineapple.\nNo more onion\nNo more Spanish omelette.\n\nThere's only pizza.";
             
             _playerCount = 2;
+            
+            AudioClips.Add("music-game", Resources.Load<AudioClip>("Music/theme-boss_battle"));
+            AudioClips.Add("music-end", Resources.Load<AudioClip>("Music/theme-assassins_assault"));
+            
+            AudioClips.Add("sound-shot", Resources.Load<AudioClip>("Sounds/flaunch"));
+            AudioClips.Add("sound-explosion", Resources.Load<AudioClip>("Sounds/rlaunch"));
         }
         
         /// <summary>
@@ -137,6 +149,10 @@ namespace PEC3.Managers
                     UpdateActivePlayers(_playerCount);
                     break;
                 case "Game":
+                    // Get the main camera source
+                    _cameraAudioSource = Camera.main.GetComponent<AudioSource>();
+                    _cameraAudioSource.clip = AudioClips.TryGetValue("music-game", out var clipgame) ? clipgame : null;
+                    _cameraAudioSource.Play();
                     // Make a backup of the intial elements of the game
                     _initialPlayers.Clear();
                     foreach (var player in Players)
@@ -168,6 +184,10 @@ namespace PEC3.Managers
                     SetState(new Begin(this));
                     break;
                 case "End":
+                    // Get the main camera source
+                    _cameraAudioSource = Camera.main.GetComponent<AudioSource>();
+                    _cameraAudioSource.clip = AudioClips.TryGetValue("music-end", out AudioClip clip) ? clip : null;
+                    _cameraAudioSource.Play();
                     // Get the UI elements
                     generalText = GameObject.Find("GeneralText").GetComponent<TextMeshProUGUI>();
                     winnerText = GameObject.Find("WinnerText").GetComponent<TextMeshProUGUI>();

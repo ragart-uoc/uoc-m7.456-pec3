@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,11 +16,32 @@ namespace PEC3.Managers
         /// <value>Property <c>creditsGroup</c> represents the CanvasGroup component containing the credits.</value>
         public GameObject credits;
         
+        /// <value>Property <c>_cameraAudioSource</c> represents the AudioSource component of the camera.</value>
+        private AudioSource _cameraAudioSource;
+        
+        /// <value>Property <c>AudioClips</c> represents a dictionary containing all sounds and music for the game.</value>
+        private readonly Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>();
+        
+        /// <summary>
+        /// Method <c>Awake</c> is called when the script instance is being loaded.
+        /// </summary>
+        private void Awake()
+        {
+            _audioClips.Add("music-intro", Resources.Load<AudioClip>("Music/theme-myst"));
+            _audioClips.Add("music-menu", Resources.Load<AudioClip>("Music/theme-fall_of_arcana"));
+        }
+        
         /// <summary>
         /// Method <c>Start</c> is called on the frame when a script is enabled just before any of the Update methods are called the first time.
         /// </summary>
         private IEnumerator Start()
         {
+            
+            // Get the main camera source
+            _cameraAudioSource = Camera.main.GetComponent<AudioSource>();
+            _cameraAudioSource.clip = _audioClips.TryGetValue("music-menu", out var clipgame) ? clipgame : null;
+            _cameraAudioSource.Play();
+            
             // Set alpha to 0 for logo and main menu
             logoGroup.alpha = 0;
             menuGroup.alpha = 0;

@@ -20,13 +20,18 @@ namespace PEC3.Entities
         /// <value>Property <c>_gameManager</c> represents the GameManager instance.</value>
         private GameManager _gameManager;
         
+        /// <value>Property <c>_audiosource</c> represents the AudioSource for the projectile.</value>
+        private AudioSource _audiosource;
+        
+        
         /// <summary>
-        /// Method <c>Start</c> is called on the frame when a script is enabled just before any of the Update methods are called the first time.
+        /// Method <c>Awake</c> is called when the script instance is being loaded.
         /// </summary>
-        private void Start()
+        private void Awake()
         {
             _groundTilemap = GameObject.Find("Ground").GetComponent<Tilemap>();
-            _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+            _gameManager = FindObjectOfType<GameManager>();
+            _audiosource = GetComponent<AudioSource>();
         }
         
         /// <summary>
@@ -62,6 +67,9 @@ namespace PEC3.Entities
 
             // Show explosion effect
             Instantiate(explosionPrefab, position, Quaternion.identity);
+            
+            // Play the explosion sound
+            _audiosource.PlayOneShot(_gameManager.AudioClips.TryGetValue("sound-explosion", out AudioClip clip) ? clip : null);
             
             // Remove all tiles in a 5x5 area around the projectile.
             var tilePosition = _groundTilemap.WorldToCell(position);

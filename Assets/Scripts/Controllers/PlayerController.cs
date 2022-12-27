@@ -46,6 +46,9 @@ namespace PEC3.Controllers
         /// <value>Property <c>_animator</c> represents the Animator component of the player.</value>
         private Animator _animator;
         
+        /// <value>Property <c>AudioSource</c> represents the AudioSource component of the player.</value>
+        private AudioSource _audiosource;
+
         /// <value>Property <c>_inputX</c> represents the horizontal input of the player.</value>
         private float _inputX;
         
@@ -68,6 +71,7 @@ namespace PEC3.Controllers
             _body = GetComponent<Rigidbody2D>();
             _renderer = GetComponent<SpriteRenderer>();
             _animator = GetComponent<Animator>();
+            _audiosource = GetComponent<AudioSource>();
         }
         
         /// <summary>
@@ -166,6 +170,8 @@ namespace PEC3.Controllers
         {
             // Instantiate projectile with an offset from the player
             var projectile = Instantiate(projectilePrefab, position + offset, Quaternion.identity);
+            // Play the shoot sound
+            _audiosource.PlayOneShot(_gameManager.AudioClips.TryGetValue("sound-shot", out AudioClip clip) ? clip : null);
             // Add force to projectile
             projectile.GetComponent<Rigidbody2D>().AddForce(direction * power, ForceMode2D.Impulse);
         }
