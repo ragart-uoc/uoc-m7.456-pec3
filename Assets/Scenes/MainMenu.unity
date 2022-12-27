@@ -590,23 +590,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'GAME DESIGN AND DEVELOPMENT
-
-    Salvador Banderas Rovira
-
-
-    FONTS
-
-    "Moon
-    2.0" - Jack Haratt
-
-    "Akira expanded" - Typologic
-
-
-    SPRITES
-
-    "Post-apocalyptic
-    background" - PashaSmith'
+  m_text: "GAME DESIGN AND DEVELOPMENT\nSalvador Banderas Rovira\n\nFONTS\n\"Moon
+    2.0\" - Jack Harvatt\n\"Akira Expanded\" - Typologic\n\nSPRITES AND ANIMATIONS\n\"Post-apocalyptic
+    background\" - PashaSmith\n\"An egg in cartoon style\" - brgfx\n\"Pizza\" - Mesym\n\"Cebolla\"
+    - OpenClipart-Vectors\n\nSOUNDS\n\"4 projectile launches\" - Michel Baradari\n\nMUSIC\n\"The
+    fall of Arcana\" - Matthew Pablo \n\"Boss Battle Theme\" - CleytonKauffman\n\"Myst\"
+    - Alexandr Zhelanov\n\"Assasin's Assault\" - HorrorPen"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 06b95e7484d8645479dc3660d59f7647, type: 2}
   m_sharedMaterial: {fileID: 8502735353787014095, guid: 06b95e7484d8645479dc3660d59f7647, type: 2}
@@ -633,7 +622,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.5
+  m_fontSize: 23
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
